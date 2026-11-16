@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1426" media="(prefers-color-scheme: dark)">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AJ Navalta — Structural Engineering</title>
+<meta name="description" content="Portfolio of Anthony John (AJ) Navalta, Civil/Structural Engineering (Co-op) student at UBC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:light dark;
+    --paper:#f5f3ee; --paper-2:#ebe8e0; --surface:#ffffff; --ink:#14213d; --ink-2:#3d4a66; --muted:#6b7488;
+    --line:#d3cfc4; --accent:#e4572e; --accent-ink:#b8401d; --on-accent:#ffffff;
+    --grid:rgba(20,33,61,.06); --stripe:rgba(20,33,61,.04); --nav-bg:rgba(245,243,238,.88);
+    --head:'Space Grotesk',system-ui,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --max:1120px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0b1426; --paper-2:#13213d; --surface:#0f1b32; --ink:#e9edf5; --ink-2:#b3bed2; --muted:#7f8ca8;
+      --line:#22334f; --accent:#f07a4a; --accent-ink:#ff936a; --on-accent:#0b1426;
+      --grid:rgba(233,237,245,.045); --stripe:rgba(233,237,245,.035); --nav-bg:rgba(11,20,38,.86);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  img{max-width:100%;display:block}
+  [hidden]{display:none!important}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+
+  /* Nav */
+  header.nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-family:var(--head);font-weight:700;font-size:1.1rem;text-decoration:none;display:flex;align-items:center;gap:10px}
+  .brand-mark{width:28px;height:28px;border:2px solid var(--ink);display:grid;place-items:center;font-size:.7rem;font-family:var(--mono)}
+  .nav ul{list-style:none;display:flex;gap:26px}
+  .nav ul a{text-decoration:none;font-size:.92rem;color:var(--ink-2);font-weight:500}
+  .nav ul a:hover{color:var(--accent-ink)}
+  .menu-btn{display:none;background:none;border:1px solid var(--ink);padding:6px 10px;font-family:var(--mono);font-size:.75rem;cursor:pointer;color:var(--ink)}
+
+  /* Hero */
+  /* Hero sits on the Vancouver skyline photo in both themes, so it always uses the dark palette */
+  .hero{position:relative;padding:104px 0 88px;border-bottom:1px solid var(--line);overflow:hidden;
+    --paper:#0b1426; --paper-2:#13213d; --surface:rgba(15,27,50,.72); --ink:#f3f5fa; --ink-2:#c9d2e3; --muted:#9aa7c2;
+    --line:rgba(233,237,245,.22); --accent:#f07a4a; --accent-ink:#ff936a; --on-accent:#0b1426; --grid:rgba(233,237,245,.06);
+    color:var(--ink);
+    background:
+      linear-gradient(100deg,rgba(11,20,38,.92) 0%,rgba(11,20,38,.78) 45%,rgba(11,20,38,.45) 100%),
+      url("images/skyline.webp") center 40%/cover no-repeat,
+      #0b1426}
+  .hero .wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:56px;align-items:center}
+  .eyebrow{color:var(--accent-ink);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+  .eyebrow::before{content:"";width:32px;height:2px;background:var(--accent)}
+  h1{font-family:var(--head);font-weight:700;font-size:clamp(2.6rem,6vw,4.4rem);line-height:1.02;letter-spacing:-.02em}
+  h1 .soft{color:var(--ink-2);font-weight:500}
+  .lede{margin-top:24px;font-size:1.18rem;color:var(--ink-2);max-width:34ch}
+  .status{margin-top:20px;display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2)}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;font-weight:600;font-size:.95rem;text-decoration:none;border:2px solid var(--ink);transition:all .15s}
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+  .portrait{position:relative;aspect-ratio:4/5;border:2px solid var(--ink);background:rgba(19,33,61,.6)}
+  .portrait img{width:100%;height:100%;object-fit:cover}
+  .portrait .dim{position:absolute;left:-2px;right:-2px;bottom:-34px;display:flex;align-items:center;gap:8px;color:var(--muted)}
+  .portrait .dim::before,.portrait .dim::after{content:"";flex:1;height:1px;background:var(--muted)}
+  .corner{position:absolute;width:14px;height:14px;border:2px solid var(--accent)}
+  .corner.tl{top:-9px;left:-9px;border-right:0;border-bottom:0}
+  .corner.br{bottom:-9px;right:-9px;border-left:0;border-top:0}
+
+  /* Placeholder for missing images */
+  .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;color:var(--muted);
+    background:repeating-linear-gradient(45deg,transparent 0 10px,var(--stripe) 10px 20px)}
+
+  /* Sections */
+  section{padding:96px 0;border-bottom:1px solid var(--line)}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:40px;flex-wrap:wrap}
+  .sec-num{color:var(--accent-ink)}
+  .sec-sub{color:var(--muted);font-size:1rem;flex-basis:100%;margin-top:6px}
+  h2{font-family:var(--head);font-size:clamp(1.9rem,3.6vw,2.6rem);font-weight:700;letter-spacing:-.015em;line-height:1.1}
+  h3{font-family:var(--head);font-size:1.25rem;font-weight:600;line-height:1.25}
+
+  /* Work filters */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+  .filters button{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);cursor:pointer}
+  .filters button:hover{border-color:var(--ink)}
+  .filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+  /* Case studies */
+  .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+  .card{background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+  .card:hover{transform:translateY(-3px);box-shadow:6px 6px 0 var(--accent)}
+  .card.feature{grid-column:1/-1;display:grid;grid-template-columns:1.1fr 1fr}
+  .card.feature .media{aspect-ratio:auto;min-height:100%;border-bottom:0;border-right:1px solid var(--line)}
+  .card[hidden]{display:none}
+  .card .media{position:relative;aspect-ratio:16/10;background:var(--paper-2);border-bottom:1px solid var(--line);overflow:hidden}
+  .card .media img{width:100%;height:100%;object-fit:cover}
+  .card .body{padding:24px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .card .media video{width:100%;height:100%;object-fit:cover;display:block}
+  .card .media img.contain{object-fit:contain;background:#fff;padding:12px}
+  .thumbs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .thumbs button{position:relative;height:76px;border:0;padding:0;cursor:pointer;background:#fff;overflow:hidden;opacity:.6;transition:opacity .15s}
+  .thumbs button:hover,.thumbs button.on{opacity:1}
+  .thumbs button.on{box-shadow:inset 0 -3px 0 var(--accent)}
+  .thumbs img{width:100%;height:100%;object-fit:cover}
+  .thumbs button[data-fit] img{object-fit:contain;padding:4px 4px 18px}
+  .thumbs span{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;font-size:.6rem;background:rgba(11,20,38,.72);color:#e9edf5;text-align:left}
+  .card .summary{color:var(--ink-2);font-size:.97rem}
+  .card .more{color:var(--accent-ink);font-weight:600;font-size:.95rem;text-decoration:none;margin-top:auto}
+  .card .more:hover{text-decoration:underline}
+  .card .tag{color:var(--muted)}
+  .card .tag b{color:var(--accent-ink);font-weight:500}
+  .psr{display:grid;gap:10px;margin-top:2px}
+  .psr div{display:grid;grid-template-columns:78px 1fr;gap:12px;font-size:.95rem;color:var(--ink-2)}
+  .psr dt{color:var(--muted);padding-top:3px;font-size:.68rem}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:10px}
+  .chip{font-family:var(--mono);font-size:.7rem;padding:4px 8px;border:1px solid var(--line);color:var(--ink-2);background:var(--paper)}
+
+  .other{margin-top:44px;border-top:1px solid var(--line)}
+  .other h3{font-size:1rem;margin:22px 0 4px}
+  .other-row{display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px}
+  .mini{padding:18px 0;border-bottom:1px dashed var(--line)}
+  .mini .t{font-family:var(--head);font-weight:600}
+  .mini .m{color:var(--muted)}
+  .mini p{color:var(--ink-2);font-size:.95rem;margin-top:6px}
+
+  /* Timeline (experience + leadership) */
+  .timeline{display:grid;border-top:1px solid var(--line)}
+  .job{display:grid;grid-template-columns:220px 1fr;gap:32px;padding:32px 0;border-bottom:1px solid var(--line)}
+  .job .when{color:var(--muted);padding-top:4px}
+  .job .org{color:var(--accent-ink);font-weight:600;font-size:.95rem;margin-top:4px}
+  .job ul{margin-top:12px;padding-left:18px;color:var(--ink-2)}
+  .job li+li{margin-top:6px}
+
+  /* Steel bridge progression */
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--surface);margin-top:14px}
+  .rung{padding:18px 20px;border-right:1px solid var(--line);position:relative}
+  .rung:last-child{border-right:0}
+  .rung .m{color:var(--muted)}
+  .rung .r{font-family:var(--head);font-weight:600;margin:4px 0 6px}
+  .rung p{color:var(--ink-2);font-size:.92rem}
+  .rung.now{box-shadow:inset 0 3px 0 var(--accent)}
+
+  /* Skills */
+  .skills{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--surface)}
+  .skill{padding:28px 24px;border-right:1px solid var(--line)}
+  .skill:last-child{border-right:0}
+  .skill h3{font-size:1.05rem;margin:10px 0 14px}
+  .skill ul{list-style:none;color:var(--ink-2);font-size:.95rem}
+  .skill li{padding:5px 0;border-bottom:1px dashed var(--line)}
+  .skill li:last-child{border-bottom:0}
+
+  /* About */
+  .about{display:grid;grid-template-columns:1.3fr 1fr;gap:64px}
+  .about p+p{margin-top:18px}
+  .about p{color:var(--ink-2)}
+  .facts{border:1px solid var(--line);background:var(--surface);align-self:start}
+  .facts div{display:grid;grid-template-columns:120px 1fr;border-bottom:1px solid var(--line)}
+  .facts div:last-child{border-bottom:0}
+  .facts dt{padding:14px 16px;border-right:1px solid var(--line);color:var(--muted)}
+  .facts dd{padding:14px 16px;font-weight:500}
+
+  /* Contact */
+  .contact{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:end}
+  .contact p{color:var(--ink-2);font-size:1.12rem;margin-top:18px;max-width:42ch}
+  .links{display:grid;border-top:2px solid var(--ink)}
+  .links a,.links .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid var(--line);text-decoration:none;font-weight:500}
+  .links a span:last-child{color:var(--muted);transition:transform .15s}
+  .links a:hover{color:var(--accent-ink)}
+  .links a:hover span:last-child{transform:translateX(4px);color:var(--accent-ink)}
+  .copy{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:5px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);cursor:pointer}
+  .copy:hover{border-color:var(--ink)}
+
+  /* Footer: drawing title block */
+  footer{padding:48px 0 64px}
+  .titleblock{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;border:2px solid var(--ink);background:var(--surface)}
+  .titleblock div{padding:10px 14px;border-right:1px solid var(--ink)}
+  .titleblock div:last-child{border-right:0}
+  .titleblock .k{color:var(--muted);font-size:.66rem}
+  .titleblock .v{font-family:var(--head);font-weight:600;margin-top:2px}
+
+  @media (max-width:900px){
+    .hero .wrap,.about,.contact{grid-template-columns:1fr}
+    .portrait{max-width:340px}
+    .projects,.other-row{grid-template-columns:1fr}
+    .card.feature{grid-template-columns:1fr}
+    .card.feature .media{aspect-ratio:16/10;border-right:0;border-bottom:1px solid var(--line)}
+    .skills{grid-template-columns:1fr 1fr}
+    .skill:nth-child(2){border-right:0}
+    .skill:nth-child(-n+2){border-bottom:1px solid var(--line)}
+    .job{grid-template-columns:1fr;gap:6px}
+    .ladder{grid-template-columns:1fr 1fr}
+    .rung:nth-child(2){border-right:0}
+    .rung:nth-child(-n+2){border-bottom:1px solid var(--line)}
+    .titleblock{grid-template-columns:1fr 1fr}
+    .titleblock div{border-bottom:1px solid var(--ink)}
+  }
+  @media (max-width:720px){
+    .nav ul{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:var(--paper);border-bottom:1px solid var(--line)}
+    .nav ul.open{display:flex}
+    .nav ul a{display:block;padding:16px 28px;border-top:1px solid var(--line)}
+    .menu-btn{display:block}
+    section{padding:72px 0}
+    .hero{padding:72px 0 80px}
+    .skills{grid-template-columns:1fr}
+    .skill{border-right:0;border-bottom:1px solid var(--line)}
+    .ladder{grid-template-columns:1fr}
+    .rung{border-right:0;border-bottom:1px solid var(--line)}
+    .rung:last-child{border-bottom:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#top" class="brand"><span class="brand-mark">AJ</span>AJ Navalta</a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+    <ul id="menu">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#leadership">Leadership</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow mono">Structural Engineering · UBC Civil</div>
+      <h1>Anthony John<br>Navalta <span class="soft">(AJ)</span></h1>
+      <p class="lede">I design structures and build the tools that make designing them faster.</p>
+      <div class="status mono">B.A.Sc. Civil / Structural (Co-op) · UBC · May 2027</div>
+      <div class="cta">
+        <a class="btn primary" href="#work">View work →</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <div class="portrait">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <img src="images/profile.jpg" alt="Portrait of AJ Navalta" onerror="this.remove()">
+      <div class="dim mono">AJN</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORK -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num mono">01</span><h2>Selected work</h2>
+      <span class="sec-sub">Design, analysis and the automation I build around them.</span></div>
+
+    <div class="filters" role="group" aria-label="Filter projects">
+      <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="design" aria-pressed="false">Design</button>
+      <button type="button" data-f="analysis" aria-pressed="false">Analysis</button>
+      <button type="button" data-f="automation" aria-pressed="false">Automation</button>
+      <button type="button" data-f="leadership" aria-pressed="false">Leadership</button>
+    </div>
+
+    <div class="projects">
+
+      <!-- Flagship -->
+      <article class="card feature" data-tags="automation design">
+        <div class="media">
+          <img src="images/steel-bridge-automation.jpg" alt="Automated steel bridge member and drawing generation" onerror="this.remove()">
+          <div class="ph mono">Add images/steel-bridge-automation.jpg</div>
+        </div>
+        <div class="body">
+          <span class="tag mono"><b>Featured</b> · UBC Steel Bridge · 2025–present</span>
+          <h3>Automated member modelling &amp; drawing pipeline</h3>
+          <dl class="psr">
+            <div><dt class="mono">Problem</dt><dd>Every bridge iteration meant re-modelling tube members by hand and re-editing drawing title blocks one sheet at a time.</dd></div>
+            <div><dt class="mono">Approach</dt><dd>Built parametric iPart tube families in Inventor (straight and angled, circular and rectangular), driven from an Excel/VBA interface through iLogic (VB.NET). A second VBA tool drives AutoCAD to create part and assembly drawings from the team template and fill every title block from one master sheet.</dd></div>
+            <div><dt class="mono">Result</dt><dd>Members and drawing sets are generated from data instead of drawn by hand, so design changes reach the fabrication package quickly.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip">Inventor iParts</span><span class="chip">iLogic / VB.NET</span><span class="chip">Excel VBA</span><span class="chip">AutoCAD</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="automation analysis">
+        <div class="media">
+          <div class="ph mono">Diagram or generic UI mockup<br>(no client data)</div>
+        </div>
+        <div class="body">
+          <span class="tag mono">RJC Engineers · 2026</span>
+          <h3>Seismic Parts &amp; Portions tool: NBCC 2020 → 2025</h3>
+          <dl class="psr">
+            <div><dt class="mono">Problem</dt><dd>The firm's seismic calculation spreadsheet needed to move to the new code edition.</dd></div>
+            <div><dt class="mono">Approach</dt><dd>Updated the calculations to NBCC 2025, added new features, improved performance and built a VBA user interface.</dd></div>
+            <div><dt class="mono">Result</dt><dd>A faster, more guided workflow for seismic design of non-structural components.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip">NBCC 2025</span><span class="chip">Seismic</span><span class="chip">Excel VBA</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="leadership design">
+        <div class="media">
+          <img src="images/steel-bridge.jpg" alt="UBC competition steel bridge" onerror="this.remove()">
+          <div class="ph mono">Add images/steel-bridge.jpg</div>
+        </div>
+        <div class="body">
+          <span class="tag mono">UBC Steel Bridge · 2023–present</span>
+          <h3>Competition steel bridge</h3>
+          <p class="summary">I've been part of the UBC Steel Bridge Design Team since 2023, from drafting member to co-captain to design and analysis advisor.</p>
+          <a class="more" href="#leadership">See my roles in Leadership →</a>
+          <div class="chips"><span class="chip">S-Frame</span><span class="chip">Fabrication</span><span class="chip">Team leadership</span></div>
+        </div>
+      </article>
+
+
+
+      <article class="card" data-tags="design">
+        <div class="media" id="claw-media">
+          <video src="images/claw-test.mp4" poster="images/claw-poster.jpg" autoplay muted loop playsinline aria-label="Claw machine picking up a sponge during testing"></video>
+          <img src="" alt="" hidden>
+        </div>
+        <div class="thumbs" data-target="claw-media">
+          <button type="button" class="on" data-video aria-label="Test video"><img src="images/claw-poster.jpg" alt=""><span class="mono">Test</span></button>
+          <button type="button" data-src="images/claw-sketch.jpg" data-fit="contain" aria-label="Orthographic sketches"><img src="images/claw-sketch.jpg" alt=""><span class="mono">Sketches</span></button>
+        </div>
+        <div class="body">
+          <span class="tag mono">APSC 101 · Engineering design</span>
+          <h3>Arduino claw machine</h3>
+          <dl class="psr">
+            <div><dt class="mono">Problem</dt><dd>Pick up an object and place it inside a marked target zone.</dd></div>
+            <div><dt class="mono">Approach</dt><dd>Laid out the frame, servo and Arduino in orthographic sketches, then built and tested the prototype.</dd></div>
+            <div><dt class="mono">Result</dt><dd>A working claw that grips and lifts the test object (video).</dd></div>
+          </dl>
+          <div class="chips"><span class="chip">Arduino</span><span class="chip">Servos</span><span class="chip">Sketching</span><span class="chip">Prototyping</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-tags="design">
+        <div class="media" id="mover-media">
+          <img src="images/claw-closed.jpg" alt="Game-piece mover render, closed" class="contain">
+        </div>
+        <div class="thumbs" data-target="mover-media">
+          <button type="button" class="on" data-src="images/claw-closed.jpg" data-fit="contain" aria-label="Game-piece mover render, closed"><img src="images/claw-closed.jpg" alt=""><span class="mono">Closed</span></button>
+          <button type="button" data-src="images/claw-open.jpg" data-fit="contain" aria-label="Game-piece mover render, open"><img src="images/claw-open.jpg" alt=""><span class="mono">Open</span></button>
+        </div>
+        <div class="body">
+          <span class="tag mono">APSC 100 · Assistive design</span>
+          <h3>Assistive game-piece mover</h3>
+          <dl class="psr">
+            <div><dt class="mono">Problem</dt><dd>Help people with disabilities pick up and move game pieces.</dd></div>
+            <div><dt class="mono">Approach</dt><dd>Designed a push-to-open gripper: a spring-return plunger drives a scissor linkage that opens and closes the jaws.</dd></div>
+            <div><dt class="mono">Result</dt><dd>A CAD model with the mechanism simulated in its open and closed positions.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip">CAD</span><span class="chip">Linkages</span><span class="chip">Assistive design</span></div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="other">
+      <h3>Other coursework</h3>
+      <div class="other-row">
+        <div class="mini">
+          <div class="t">UBC East Mall street redesign</div>
+          <div class="m mono">CIVL 303 · 2024 · PTV Vissim, AutoCAD</div>
+          <p>Modelled the current and redesigned corridor in Vissim. Pedestrian crossings, an overpass and signal changes improved efficiency 1.5× and cut conflict areas.</p>
+        </div>
+        <div class="mini">
+          <div class="t">Pump station optimization</div>
+          <div class="m mono">CIVL 316 · 2024 · Excel</div>
+          <p>Simulated pump and pipe sizing, parallel pumps and VFDs from lab data; the team design cut estimated cost from $10M to $3M.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num mono">02</span><h2>Experience</h2>
+      <span class="sec-sub">Completed co-op terms.</span></div>
+    <div class="timeline">
+
+      <div class="job">
+        <div class="when mono">Jan – Aug 2026<br>8 months</div>
+        <div>
+          <h3>Structural Engineering Co-op</h3>
+          <div class="org">RJC Engineers · Vancouver</div>
+          <ul>
+            <li>Designed steel elements (brick veneer supports, canopy hangers, elevator supports, roof screens) and their connections in SAP2000, S-Frame and Hilti PROFIS.</li>
+            <li>Designed reinforced concrete slabs and shallow foundations to NBCC.</li>
+            <li>Performed dead, live, snow, wind and seismic load analyses, including column and mass takedowns and snow drift.</li>
+            <li>Wrote reports on feasibility studies, field reviews and design recommendations; updated the firm's seismic parts tool to NBCC 2025.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="when mono">May – Dec 2025<br>8 months</div>
+        <div>
+          <h3>Structural Engineering Co-op</h3>
+          <div class="org">Glotman Simpson · Vancouver</div>
+          <ul>
+            <li>Analyzed two-way slabs and foundations in RAM Concept and updated reinforcement detailing.</li>
+            <li>Primary correspondent for 8 high-rise projects: submittals, RFIs, site instructions and document control.</li>
+            <li>Reviewed shop drawings and performed rebar and concrete field inspections.</li>
+            <li>Prepared Letters of Assurance and deferral letters (S-B, S-C); built a VBA submittal-management tool for the co-op team.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section id="leadership">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num mono">03</span><h2>Leadership</h2></div>
+    <div class="timeline">
+
+      <div class="job">
+        <div class="when mono">2023 – present</div>
+        <div>
+          <h3>UBC Steel Bridge Design Team</h3>
+          <div class="org">University of British Columbia</div>
+          <div class="ladder">
+            <div class="rung">
+              <div class="m mono">2023 – 24</div>
+              <div class="r">Drafting Member</div>
+              <p>Drew bridge members and parts in AutoCAD and Inventor for the fabrication package.</p>
+            </div>
+            <div class="rung">
+              <div class="m mono">2024 – 25</div>
+              <div class="r">Drafting Sub-team Co-Lead</div>
+              <p>AutoCAD and Inventor fabrication drawings; QC on drawing packages; taught 10 members CAD.</p>
+            </div>
+            <div class="rung">
+              <div class="m mono">2025 – 26</div>
+              <div class="r">Design Team Co-Captain</div>
+              <p>Led 62 students across 9 subteams from concept to fabrication; coordinated with fabricators.</p>
+            </div>
+            <div class="rung now">
+              <div class="m mono">2026 – present</div>
+              <div class="r">Design &amp; Analysis Advisor</div>
+              <p>Optimizing the new bridge in S-Frame; mentoring subteams to iterate quickly and stay fabricable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="when mono">2023 – 2025</div>
+        <div>
+          <h3>Year Representative &amp; Event Coordinator</h3>
+          <div class="org">UBC Canadian Society for Civil Engineering (CSCE)</div>
+          <ul>
+            <li>Co-hosted the annual speed networking night for 140+ students and industry professionals.</li>
+            <li>Ran registration and logistics for Industry Night (200+ attendees).</li>
+            <li>Represented 2nd- and 3rd-year civil students in decision-making.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="when mono">2024</div>
+        <div>
+          <h3>Imagine Day Volunteer, Applied Science</h3>
+          <div class="org">University of British Columbia</div>
+          <ul><li>Led a group of 10 first-year engineering students through orientation.</li></ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num mono">04</span><h2>Tools &amp; skills</h2></div>
+    <div class="skills">
+      <div class="skill"><span class="mono" style="color:var(--accent-ink)">A</span><h3>Analysis &amp; design</h3>
+        <ul><li>SAP2000</li><li>RAM Concept</li><li>Altair S-Frame</li><li>GSA Oasys</li><li>Femap</li><li>Hilti PROFIS Engineering</li></ul></div>
+      <div class="skill"><span class="mono" style="color:var(--accent-ink)">B</span><h3>CAD &amp; drafting</h3>
+        <ul><li>AutoCAD</li><li>Autodesk Inventor</li><li>Bluebeam</li></ul></div>
+      <div class="skill"><span class="mono" style="color:var(--accent-ink)">C</span><h3>Programming</h3>
+        <ul><li>Excel &amp; VBA</li><li>VB.NET (iLogic)</li><li>Python</li><li>MATLAB · R</li><li>C · C++ · Java</li></ul></div>
+      <div class="skill"><span class="mono" style="color:var(--accent-ink)">D</span><h3>Practice</h3>
+        <ul><li>NBCC 2020 &amp; 2025 loading</li><li>Shop drawing review</li><li>Field reviews</li><li>Engineering reports</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num mono">05</span><h2>About</h2></div>
+    <div class="about">
+      <div>
+        <p>I'm a Civil / Structural Engineering (Co-op) student at the University of British Columbia, graduating in May 2027. I chose civil engineering because the results last: you can stand on, walk through and live in the things you design.</p>
+        <p>Across two co-op terms I've designed steel, concrete and foundation elements, run code load analyses and supported projects through construction. Alongside that I write software for the repetitive parts of drafting and analysis, so more time goes into the engineering itself.</p>
+        <p>Outside engineering: golf, boxing, guitar, and DJing and mixing music.</p>
+      </div>
+      <dl class="facts">
+        <div><dt class="mono">Program</dt><dd>B.A.Sc. Civil / Structural (Co-op), UBC</dd></div>
+        <div><dt class="mono">Graduating</dt><dd>May 2027</dd></div>
+        <div><dt class="mono">Past co-ops</dt><dd>RJC Engineers (2026) · Glotman Simpson (2025)</dd></div>
+        <div><dt class="mono">Based in</dt><dd>Vancouver, BC</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-bottom:0">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <div class="sec-head" style="margin-bottom:0"><span class="sec-num mono">06</span><h2>Let's talk</h2></div>
+        <p>Open to structural engineering roles and conversations about design, infrastructure and engineering automation.</p>
+      </div>
+      <div class="links">
+        <div class="row"><a href="mailto:ajtn.navalta@gmail.com" style="padding:0;border:0"><span>ajtn.navalta@gmail.com</span></a><button class="copy" type="button" data-copy="ajtn.navalta@gmail.com">Copy</button></div>
+        <a href="https://www.linkedin.com/in/anthonyjohnnavalta/" target="_blank" rel="noopener"><span>LinkedIn</span><span>↗</span></a>
+        <a href="https://ubcsteelbridge.ca" target="_blank" rel="noopener"><span>UBC Steel Bridge</span><span>↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="titleblock">
+      <div><div class="k mono">Project</div><div class="v">AJ Navalta — Portfolio</div></div>
+      <div><div class="k mono">Drawn</div><div class="v">AJN</div></div>
+      <div><div class="k mono">Scale</div><div class="v">NTS</div></div>
+      <div><div class="k mono">Rev</div><div class="v">B</div></div>
+      <div><div class="k mono">Date</div><div class="v" id="yr">2026</div></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const btn=document.querySelector('.menu-btn'), menu=document.getElementById('menu');
+  btn.addEventListener('click',()=>{const o=menu.classList.toggle('open');btn.setAttribute('aria-expanded',o)});
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');btn.setAttribute('aria-expanded',false)}));
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // Project filters
+  const fbtns=document.querySelectorAll('.filters button'), cards=document.querySelectorAll('.projects .card');
+  fbtns.forEach(b=>b.addEventListener('click',()=>{
+    const f=b.dataset.f;
+    fbtns.forEach(x=>x.setAttribute('aria-pressed',x===b));
+    cards.forEach(c=>{c.hidden=!(f==='all'||c.dataset.tags.split(' ').includes(f))});
+  }));
+
+  // Copy email
+  document.querySelectorAll('.copy').forEach(c=>c.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(c.dataset.copy);c.textContent='Copied';}
+    catch(e){c.textContent='Select & copy';}
+    setTimeout(()=>c.textContent='Copy',1600);
+  }));
+  // Project media galleries
+  document.querySelectorAll('.thumbs').forEach(g=>{
+    const m=document.getElementById(g.dataset.target), v=m.querySelector('video'), im=m.querySelector('img');
+    g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+      if('video' in b.dataset&&v){im.hidden=true;v.hidden=false;v.play().catch(()=>{});}
+      else{if(v){v.pause();v.hidden=true;}im.src=b.dataset.src;im.alt=b.getAttribute('aria-label');im.className=b.dataset.fit==='contain'?'contain':'';im.hidden=false;}
+    }));
+  });
+</script>
+</body>
+</html>
