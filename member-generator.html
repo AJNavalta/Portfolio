@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1426" media="(prefers-color-scheme: dark)">
+<title>Parametric HSS Member Generator — AJ Navalta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:light dark;
+    --paper:#f5f3ee; --paper-2:#ebe8e0; --surface:#ffffff; --ink:#14213d; --ink-2:#3d4a66; --muted:#6b7488;
+    --line:#d3cfc4; --accent:#e4572e; --accent-ink:#b8401d; --on-accent:#ffffff; --view:#e9e6de; --warn:#b8401d;
+    --head:'Space Grotesk',system-ui,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0b1426; --paper-2:#13213d; --surface:#0f1b32; --ink:#e9edf5; --ink-2:#b3bed2; --muted:#7f8ca8;
+      --line:#22334f; --accent:#f07a4a; --accent-ink:#ff936a; --on-accent:#0b1426; --view:#0d182d; --warn:#ff936a;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+  a{color:inherit}
+  [hidden]{display:none!important}
+
+  header{border-bottom:1px solid var(--line);background:var(--paper)}
+  header .in{max-width:1400px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .back{text-decoration:none;color:var(--ink-2);font-weight:500}
+  .back:hover{color:var(--accent-ink)}
+  h1{font-family:var(--head);font-size:1.35rem;font-weight:700;letter-spacing:-.01em}
+  .sub{color:var(--muted)}
+
+  .app{max-width:1400px;margin:0 auto;padding:20px 24px 40px;display:grid;grid-template-columns:330px 1fr;gap:20px}
+  .panel{background:var(--surface);border:1px solid var(--line)}
+  .panel h2{font-family:var(--head);font-size:.95rem;font-weight:600;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .panel .pad{padding:14px 16px}
+
+  /* Controls */
+  .seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink);margin-bottom:14px}
+  .seg button{padding:8px;border:0;background:transparent;color:var(--ink);font:600 .85rem var(--body);cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+  .field{display:grid;grid-template-columns:1fr 92px;align-items:center;gap:6px 10px;margin-bottom:10px}
+  .field label{font-size:.88rem;color:var(--ink-2)}
+  .field input[type=number]{width:100%;padding:6px 8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:500 .88rem var(--mono);text-align:right}
+  .field input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+  .field .u{font-size:.7rem;color:var(--muted)}
+  .msg{min-height:1.2em;color:var(--warn);font-size:.82rem;margin-top:4px}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .btn{padding:7px 12px;border:1px solid var(--ink);background:transparent;color:var(--ink);font:600 .8rem var(--body);cursor:pointer}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;font-size:.8rem}
+  th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  td{font-family:var(--mono);font-size:.76rem}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--paper-2)}
+  tbody tr.on{background:var(--paper-2);box-shadow:inset 3px 0 0 var(--accent)}
+  .tablewrap{overflow-x:auto}
+
+  /* Viewer */
+  .right{display:grid;gap:20px;grid-template-rows:auto auto;min-width:0}
+  .viewer{position:relative;height:440px;background:var(--view);border:1px solid var(--line)}
+  .viewer canvas{display:block;width:100%;height:100%}
+  .hud{position:absolute;left:12px;top:10px;color:var(--muted);pointer-events:none}
+  .hint{position:absolute;right:12px;bottom:10px;color:var(--muted);pointer-events:none}
+  .viewbtns{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+  .viewbtns button{padding:5px 9px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font:500 .66rem var(--mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+  .viewbtns button:hover{border-color:var(--ink);color:var(--ink)}
+  .fallback{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:20px;color:var(--muted)}
+
+  .lower{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;min-width:0;align-items:start}
+  .sheet{background:#fff;color:#14213d;border:1px solid var(--line)}
+  .sheet svg{display:block;width:100%;height:auto}
+  .props dl{display:grid;grid-template-columns:1fr auto}
+  .props dt,.props dd{padding:7px 16px;border-bottom:1px solid var(--line)}
+  .props dt{color:var(--ink-2);font-size:.86rem}
+  .props dd{font-family:var(--mono);font-size:.82rem;text-align:right}
+  .props .note{padding:10px 16px;color:var(--muted);font-size:.78rem}
+
+  @media (max-width:1000px){
+    .app{grid-template-columns:1fr}
+    .lower{grid-template-columns:1fr}
+    .viewer{height:360px}
+  }
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="in">
+    <div>
+      <a class="back mono" href="index.html">← AJ Navalta</a>
+      <h1>Parametric HSS member generator</h1>
+      <div class="sub">A browser take on my Inventor iPart workflow: one parametric tube, many members, drawings generated from the data.</div>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- Controls -->
+  <div style="display:grid;gap:20px;align-content:start">
+    <div class="panel">
+      <h2>Parameters <span class="mono" id="partLabel" style="color:var(--accent-ink)"></span></h2>
+      <div class="pad">
+        <div class="seg" role="group" aria-label="Section shape">
+          <button type="button" data-shape="round" aria-pressed="true">Round HSS</button>
+          <button type="button" data-shape="rect" aria-pressed="false">Rect HSS</button>
+        </div>
+
+        <div class="field" data-for="round"><label for="D">Outside diameter <span class="u">mm</span></label><input id="D" type="number" step="0.1"><input type="range" data-link="D" min="15" max="120" step="0.1"></div>
+        <div class="field" data-for="rect"><label for="H">Depth, H <span class="u">mm</span></label><input id="H" type="number" step="0.1"><input type="range" data-link="H" min="15" max="150" step="0.1"></div>
+        <div class="field" data-for="rect"><label for="B">Width, B <span class="u">mm</span></label><input id="B" type="number" step="0.1"><input type="range" data-link="B" min="15" max="150" step="0.1"></div>
+        <div class="field"><label for="t">Wall thickness, t <span class="u">mm</span></label><input id="t" type="number" step="0.1"><input type="range" data-link="t" min="1" max="12" step="0.1"></div>
+        <div class="field"><label for="L">Length on centreline <span class="u">mm</span></label><input id="L" type="number" step="1"><input type="range" data-link="L" min="100" max="3000" step="1"></div>
+        <div class="field"><label for="a1">Start miter angle <span class="u">°</span></label><input id="a1" type="number" step="0.5"><input type="range" data-link="a1" min="-60" max="60" step="0.5"></div>
+        <div class="field"><label for="a2">End miter angle <span class="u">°</span></label><input id="a2" type="number" step="0.5"><input type="range" data-link="a2" min="-60" max="60" step="0.5"></div>
+        <div class="msg" id="msg" role="status"></div>
+        <div class="btns">
+          <button class="btn" type="button" id="updRow">Update row</button>
+          <button class="btn primary" type="button" id="addRow">Save as new row</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Member table <button class="btn" type="button" id="copyCsv" style="padding:4px 9px;font-size:.72rem">Copy CSV</button></h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Part</th><th>Section</th><th>t</th><th>L</th><th>θ₁ / θ₂</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Model, drawing, properties -->
+  <div class="right">
+    <div class="viewer" id="viewer">
+      <div class="hud mono" id="hud"></div>
+      <div class="viewbtns">
+        <button type="button" data-view="iso">Iso</button>
+        <button type="button" data-view="front">Elev</button>
+        <button type="button" data-view="end">End</button>
+      </div>
+      <div class="hint mono">Drag to orbit · scroll to zoom</div>
+      <div class="fallback" id="fallback">3D view needs WebGL. The drawing and properties below still update.</div>
+    </div>
+
+    <div class="lower">
+      <div class="sheet" id="sheet" aria-label="Generated shop drawing"></div>
+      <div class="panel props">
+        <h2>Section &amp; member properties</h2>
+        <dl id="props"></dl>
+        <div class="note">Gross section properties computed from the modelled profile. Steel density 7850 kg/m³. Rectangular HSS outside corner radius taken as 2t.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- Data ---------- */
+let rows = [
+  {part:'M-01', shape:'rect',  H:38.1, B:38.1, D:38.1, t:3.2, L:1500, a1:0,   a2:0},
+  {part:'M-02', shape:'round', H:33.4, B:33.4, D:33.4, t:2.8, L:820,  a1:45,  a2:45},
+  {part:'M-03', shape:'round', H:26.7, B:26.7, D:26.7, t:2.9, L:600,  a1:0,   a2:0},
+  {part:'M-04', shape:'rect',  H:50.8, B:25.4, D:50.8, t:3.2, L:1200, a1:30,  a2:-30},
+  {part:'M-05', shape:'round', H:42.2, B:42.2, D:42.2, t:3.6, L:950,  a1:-20, a2:35},
+];
+let cur = 0;
+let p = {...rows[0]};
+const RHO = 7850e-9; // kg/mm³
+const $ = id => document.getElementById(id);
+
+/* ---------- Profile ---------- */
+// Rounded rectangle sampled CCW with a fixed point count, so outer and inner loops correspond 1:1.
+// A circle is the special case B = H = 2r.
+const NARC = 16;
+function roundedRect(B, H, r){
+  const pts = [], cx = B/2 - r, cy = H/2 - r;
+  const corners = [[ cx, cy],[-cx, cy],[-cx,-cy],[ cx,-cy]];
+  corners.forEach(([x0,y0],c) => {
+    for(let i=0;i<=NARC;i++){
+      const a = (c + i/NARC) * Math.PI/2;
+      pts.push({u:x0 + r*Math.cos(a), v:y0 + r*Math.sin(a), nu:Math.cos(a), nv:Math.sin(a)});
+    }
+  });
+  return pts;
+}
+function loops(q){
+  if(q.shape==='round'){
+    const R = q.D/2;
+    return {outer:roundedRect(q.D,q.D,R), inner:roundedRect(q.D-2*q.t,q.D-2*q.t,R-q.t), H:q.D, B:q.D};
+  }
+  const r = Math.min(2*q.t, Math.min(q.B,q.H)/2), ri = Math.max(r - q.t, 0);
+  return {outer:roundedRect(q.B,q.H,r), inner:roundedRect(q.B-2*q.t,q.H-2*q.t,ri), H:q.H, B:q.B};
+}
+// Polygon area and second moments (about centroid; section is doubly symmetric).
+function polyProps(pts){
+  let A=0, Iu=0, Iv=0;
+  for(let i=0;i<pts.length;i++){
+    const a=pts[i], b=pts[(i+1)%pts.length], cr=a.u*b.v - b.u*a.v;
+    A += cr; Iu += cr*(a.v*a.v + a.v*b.v + b.v*b.v); Iv += cr*(a.u*a.u + a.u*b.u + b.u*b.u);
+  }
+  return {A:A/2, Ix:Iu/12, Iy:Iv/12};
+}
+function section(q){
+  const {outer,inner,H,B} = loops(q), o = polyProps(outer), n = polyProps(inner);
+  const A = o.A - n.A, Ix = o.Ix - n.Ix, Iy = o.Iy - n.Iy;
+  return {A, Ix, Iy, Sx:Ix/(H/2), Sy:Iy/(B/2), rx:Math.sqrt(Ix/A), ry:Math.sqrt(Iy/A), H, B};
+}
+
+/* ---------- Validation ---------- */
+function check(q){
+  const H = q.shape==='round' ? q.D : q.H, B = q.shape==='round' ? q.D : q.B;
+  if(!(q.t>0)) return 'Wall thickness must be positive.';
+  if(q.t >= Math.min(H,B)/2) return 'Wall thickness must be less than half the smallest outside dimension.';
+  const tsum = Math.tan(q.a1*Math.PI/180) + Math.tan(q.a2*Math.PI/180);
+  if(q.L - (H/2)*Math.abs(tsum) <= 5) return 'Miter angles too steep for this length: the cuts would cross.';
+  return '';
+}
+
+/* ---------- 3D ---------- */
+let renderer, scene, camera, controls, mesh, edges, gl = true;
+const viewer = $('viewer');
+try{
+  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+}catch(e){ gl = false; $('fallback').style.display='grid'; }
+
+if(gl){
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  viewer.appendChild(renderer.domElement);
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(35, 1, 1, 50000);
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x445066, 1.4));
+  const d1 = new THREE.DirectionalLight(0xffffff, 2.2); d1.position.set(1, 1.6, 1.2); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xffffff, 0.8); d2.position.set(-1.2, -0.4, -1); scene.add(d2);
+  new ResizeObserver(resize).observe(viewer);
+  (function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene,camera); })();
+}
+function resize(){
+  const w = viewer.clientWidth, h = viewer.clientHeight;
+  renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+
+// Tube along x; profile u → z (width), v → y (depth). Ends cut by planes through the centreline:
+// x_start = -L/2 - y·tanθ1,  x_end = L/2 + y·tanθ2.
+function buildGeometry(q){
+  const {outer, inner} = loops(q);
+  const t1 = Math.tan(q.a1*Math.PI/180), t2 = Math.tan(q.a2*Math.PI/180), L = q.L;
+  const pos=[], nor=[];
+  const xs = y => -L/2 - y*t1, xe = y => L/2 + y*t2;
+  const P = (x,pt) => [x, pt.v, pt.u];
+  function quad(a,b,c,d,na,nb,nc,nd){ // a-b-c, a-c-d
+    pos.push(...a,...b,...c,...a,...c,...d); nor.push(...na,...nb,...nc,...na,...nc,...nd);
+  }
+  const N = outer.length;
+  for(let i=0;i<N;i++){
+    const j=(i+1)%N, o0=outer[i], o1=outer[j], n0=inner[i], n1=inner[j];
+    // outer skin
+    quad(P(xs(o0.v),o0),P(xs(o1.v),o1),P(xe(o1.v),o1),P(xe(o0.v),o0),
+         [0,o0.nv,o0.nu],[0,o1.nv,o1.nu],[0,o1.nv,o1.nu],[0,o0.nv,o0.nu]);
+    // inner skin (normals inward)
+    quad(P(xs(n1.v),n1),P(xs(n0.v),n0),P(xe(n0.v),n0),P(xe(n1.v),n1),
+         [0,-n1.nv,-n1.nu],[0,-n0.nv,-n0.nu],[0,-n0.nv,-n0.nu],[0,-n1.nv,-n1.nu]);
+    // end caps (planar rings on each cut plane)
+    const ns = new THREE.Vector3(-1,-t1,0).normalize().toArray(), ne = new THREE.Vector3(1,-t2,0).normalize().toArray();
+    quad(P(xs(o1.v),o1),P(xs(o0.v),o0),P(xs(n0.v),n0),P(xs(n1.v),n1),ns,ns,ns,ns);
+    quad(P(xe(o0.v),o0),P(xe(o1.v),o1),P(xe(n1.v),n1),P(xe(n0.v),n0),ne,ne,ne,ne);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor,3));
+  return g;
+}
+function updateModel(q, refit){
+  if(!gl) return;
+  if(mesh){ scene.remove(mesh); mesh.geometry.dispose(); scene.remove(edges); edges.geometry.dispose(); }
+  const g = buildGeometry(q);
+  mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({color:0xb4bcc9, metalness:.25, roughness:.45, side:THREE.DoubleSide}));
+  edges = new THREE.LineSegments(new THREE.EdgesGeometry(g, 28), new THREE.LineBasicMaterial({color:0x14213d, transparent:true, opacity:.55}));
+  scene.add(mesh, edges);
+  if(refit) setView(currentView);
+}
+let currentView = 'iso';
+function setView(v){
+  if(!gl) return;
+  currentView = v;
+  const H = p.shape==='round'?p.D:p.H, span = Math.max(p.L + H*2, 300);
+  const d = span / (2*Math.tan(camera.fov*Math.PI/360)) * 0.62;
+  const dir = v==='front' ? [0,0,1] : v==='end' ? [1,0,0.0001] : [0.55,0.5,0.85];
+  const n = new THREE.Vector3(...dir).normalize().multiplyScalar(v==='end' ? Math.max(H,p.B||H)*6 : d);
+  camera.position.copy(n); controls.target.set(0,0,0); camera.near = d/200; camera.far = d*20; camera.updateProjectionMatrix();
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+/* ---------- Drawing (SVG) ---------- */
+const f1 = x => (Math.round(x*10)/10).toString();
+function drawing(q, s){
+  const H = s.H, t1 = Math.tan(q.a1*Math.PI/180), t2 = Math.tan(q.a2*Math.PI/180), L = q.L;
+  const W = 800, VH = 420;
+  // Elevation area
+  const ex0 = 50, ex1 = 540, ey = 165;
+  const xmin = Math.min(-L/2 - (H/2)*t1, -L/2 + (H/2)*t1), xmax = Math.max(L/2 + (H/2)*t2, L/2 - (H/2)*t2);
+  // Long, slender members are drawn with a break so the section depth stays legible.
+  let k = Math.min((ex1-ex0)/(xmax-xmin), 120/H);
+  const kMin = 44/H, broken = k < kMin;
+  const half = (ex1-ex0)/2 - 14;
+  if(broken) k = Math.min(kMin, 120/H);
+  const X = broken ? (x => x <= 0 ? ex0 + (x - xmin)*k : ex1 - (xmax - x)*k) : (x => ex0 + (x - xmin)*k);
+  const Y = y => ey - y*k;
+  const xs = y => -L/2 - y*t1, xe = y => L/2 + y*t2;
+  const top = H/2, bot = -H/2, ti = H/2 - q.t;
+  const bL = ex0 + half, bR = ex1 - half;
+  const zig = (x) => { const a=Y(top)-6, b=Y(bot)+6, m=(a+b)/2; return `<path d="M${x},${a} L${x},${m-6} L${x-5},${m-2} L${x+5},${m+2} L${x},${m+6} L${x},${b}" class="ext" fill="none" style="stroke:#14213d;stroke-width:.9"/>`; };
+  let outline, hid, cl;
+  if(!broken){
+    outline = `<polygon points="${[[xs(top),top],[xe(top),top],[xe(bot),bot],[xs(bot),bot]].map(([x,y])=>`${X(x)},${Y(y)}`).join(' ')}" class="obj"/>`;
+    hid = y => `<line x1="${X(xs(y))}" y1="${Y(y)}" x2="${X(xe(y))}" y2="${Y(y)}" class="hid"/>`;
+    cl = `<line x1="${X(xmin)-14}" y1="${Y(0)}" x2="${X(xmax)+14}" y2="${Y(0)}" class="cl"/>`;
+  } else {
+    outline = `<polyline points="${bL},${Y(top)} ${X(xs(top))},${Y(top)} ${X(xs(bot))},${Y(bot)} ${bL},${Y(bot)}" class="obj"/>
+      <polyline points="${bR},${Y(top)} ${X(xe(top))},${Y(top)} ${X(xe(bot))},${Y(bot)} ${bR},${Y(bot)}" class="obj"/>${zig(bL)}${zig(bR)}`;
+    hid = y => `<line x1="${X(xs(y))}" y1="${Y(y)}" x2="${bL}" y2="${Y(y)}" class="hid"/><line x1="${bR}" y1="${Y(y)}" x2="${X(xe(y))}" y2="${Y(y)}" class="hid"/>`;
+    cl = `<line x1="${X(xmin)-14}" y1="${Y(0)}" x2="${bL+10}" y2="${Y(0)}" class="cl"/><line x1="${bR-10}" y1="${Y(0)}" x2="${X(xmax)+14}" y2="${Y(0)}" class="cl"/>`;
+  }
+  // dimensions
+  const dimY = Y(bot) + 40, dimY2 = Y(top) - 26;
+  const lpTop = xe(top)-xs(top), lpBot = xe(bot)-xs(bot);
+  const dim = (xa,xb,y,label,refA,refB) => `
+    <line x1="${xa}" y1="${refA}" x2="${xa}" y2="${y+5*Math.sign(y-refA)}" class="ext"/>
+    <line x1="${xb}" y1="${refB}" x2="${xb}" y2="${y+5*Math.sign(y-refB)}" class="ext"/>
+    <line x1="${xa}" y1="${y}" x2="${xb}" y2="${y}" class="dim" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <text x="${(xa+xb)/2}" y="${y-5}" class="dt">${label}</text>`;
+  const angLbl = (x,y,a,anchor) => a===0 ? '' : `<text x="${x}" y="${y}" class="dt" text-anchor="${anchor}">${f1(Math.abs(a))}°</text>`;
+
+  // Section view
+  const sx = 680, sy = 165, ks = Math.min(110/Math.max(s.H,s.B), 3.2);
+  const {outer, inner} = loops(q);
+  const path = pts => 'M' + pts.map(pt => `${sx + pt.u*ks},${sy - pt.v*ks}`).join('L') + 'Z';
+  const secLabel = q.shape==='round' ? `HSS ${f1(q.D)} × ${f1(q.t)}` : `HSS ${f1(q.H)} × ${f1(q.B)} × ${f1(q.t)}`;
+  const mass = s.A*L*RHO;
+
+  return `<svg viewBox="0 0 ${W} ${VH}" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,2 L10,5 L0,8 z" fill="#14213d"/></marker>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#14213d" stroke-width=".8"/></pattern>
+    <style>
+      .obj{fill:none;stroke:#14213d;stroke-width:1.6}
+      .hid{stroke:#14213d;stroke-width:.8;stroke-dasharray:6 4}
+      .cl{stroke:#e4572e;stroke-width:.8;stroke-dasharray:18 4 3 4}
+      .ext{stroke:#6b7488;stroke-width:.6}
+      .dim{stroke:#14213d;stroke-width:.7}
+      .dt{font-size:11px;fill:#14213d;text-anchor:middle}
+      .lbl{font-size:10px;fill:#6b7488;letter-spacing:.08em}
+      .tb{fill:none;stroke:#14213d;stroke-width:1.2}
+      .tk{font-size:8px;fill:#6b7488;letter-spacing:.08em}
+      .tv{font-size:12px;fill:#14213d;font-family:'Space Grotesk',sans-serif;font-weight:600}
+    </style>
+  </defs>
+  <rect x="6" y="6" width="${W-12}" height="${VH-12}" class="tb"/>
+  <text x="${ex0}" y="34" class="lbl">ELEVATION</text>
+  <text x="${sx-60}" y="34" class="lbl">SECTION</text>
+
+  ${cl}
+  ${hid(ti)}${hid(-ti)}
+  ${outline}
+  ${dim(X(-L/2),X(L/2),dimY,`${f1(L)} CL`,Y(0),Y(0))}
+  ${dim(X(xs(top)),X(xe(top)),dimY2,`${f1(lpTop)}`,Y(top),Y(top))}
+  ${dim(X(xs(bot)),X(xe(bot)),dimY+26,`${f1(lpBot)}`,Y(bot),Y(bot))}
+  ${angLbl(Math.min(X(xs(top)),X(xs(bot)))-8, Y(0)+4, q.a1, 'end')}
+  ${angLbl(Math.max(X(xe(top)),X(xe(bot)))+8, Y(0)+4, q.a2, 'start')}
+
+  <path d="${path(outer)} ${path([...inner].reverse())}" fill="url(#hatch)" fill-rule="evenodd" stroke="#14213d" stroke-width="1.2"/>
+  <line x1="${sx-75}" y1="${sy}" x2="${sx+75}" y2="${sy}" class="cl"/>
+  <line x1="${sx}" y1="${sy-75}" x2="${sx}" y2="${sy+75}" class="cl"/>
+  <text x="${sx}" y="${sy+95}" class="dt">${secLabel}</text>
+
+  <!-- Title block -->
+  <g transform="translate(6,${VH-66})">
+    <rect x="0" y="0" width="${W-12}" height="60" class="tb"/>
+    ${[['PART',q.part||'—',0,120],['SECTION',secLabel,120,330],['LENGTH (CL)',`${f1(L)} mm`,330,470],['MASS',`${mass.toFixed(2)} kg`,470,590],['MATERIAL','ASTM A500 Gr. C',590,W-12]]
+      .map(([k1,v,a,b])=>`<line x1="${b}" y1="0" x2="${b}" y2="60" stroke="#14213d" stroke-width="${b===W-12?0:1}"/><text x="${a+10}" y="20" class="tk">${k1}</text><text x="${a+10}" y="42" class="tv">${v}</text>`).join('')}
+  </g>
+  <text x="${W-14}" y="${VH-76}" class="lbl" text-anchor="end">ALL DIMENSIONS IN mm · NTS</text>
+</svg>`;
+}
+
+/* ---------- Properties ---------- */
+function propsHTML(q,s){
+  const t1 = Math.tan(q.a1*Math.PI/180), t2 = Math.tan(q.a2*Math.PI/180), h = s.H/2;
+  const lp = Math.max(q.L + h*(t1+t2), q.L - h*(t1+t2)), sp = Math.min(q.L + h*(t1+t2), q.L - h*(t1+t2));
+  const rowsP = [
+    ['Area, A', `${s.A.toFixed(0)} mm²`],
+    ['I<sub>x</sub>', `${(s.Ix/1e6).toFixed(3)} ×10⁶ mm⁴`],
+    ['I<sub>y</sub>', `${(s.Iy/1e6).toFixed(3)} ×10⁶ mm⁴`],
+    ['S<sub>x</sub>', `${(s.Sx/1e3).toFixed(2)} ×10³ mm³`],
+    ['r<sub>x</sub> / r<sub>y</sub>', `${s.rx.toFixed(1)} / ${s.ry.toFixed(1)} mm`],
+    ['Mass per metre', `${(s.A*1000*RHO).toFixed(2)} kg/m`],
+    ['Member mass', `${(s.A*q.L*RHO).toFixed(2)} kg`],
+    ['Long point / short point', `${lp.toFixed(1)} / ${sp.toFixed(1)} mm`],
+  ];
+  return rowsP.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');
+}
+
+/* ---------- UI wiring ---------- */
+const keys = ['D','H','B','t','L','a1','a2'];
+function sizeLabel(r){ return r.shape==='round' ? `Ø${f1(r.D)}` : `${f1(r.H)}×${f1(r.B)}`; }
+function renderTable(){
+  $('rows').innerHTML = rows.map((r,i)=>`<tr class="${i===cur?'on':''}" data-i="${i}">
+    <td>${r.part}</td><td>${sizeLabel(r)}</td><td>${f1(r.t)}</td><td>${f1(r.L)}</td><td>${f1(r.a1)} / ${f1(r.a2)}</td>
+    <td><button class="btn" data-del="${i}" style="padding:1px 6px;font-size:.7rem" aria-label="Delete ${r.part}">×</button></td></tr>`).join('');
+}
+function syncInputs(){
+  keys.forEach(k=>{ $(k).value = p[k]; document.querySelector(`[data-link="${k}"]`).value = p[k]; });
+  document.querySelectorAll('[data-shape]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.shape===p.shape));
+  document.querySelectorAll('[data-for]').forEach(f=>f.hidden = f.dataset.for!==p.shape);
+  $('partLabel').textContent = p.part || '';
+}
+function refresh(refit){
+  const err = check(p);
+  $('msg').textContent = err;
+  if(err) return;
+  const s = section(p);
+  updateModel(p, refit);
+  $('sheet').innerHTML = drawing(p, s);
+  $('props').innerHTML = propsHTML(p, s);
+  $('hud').textContent = `${p.part||''}  ${p.shape==='round'?'Round':'Rect'} HSS · ${f1(p.L)} mm · ${(s.A*p.L*RHO).toFixed(2)} kg`;
+}
+keys.forEach(k=>{
+  const num = $(k), rng = document.querySelector(`[data-link="${k}"]`);
+  const set = v => { const x = parseFloat(v); if(!isFinite(x)) return; p[k]=x; num.value=x; rng.value=x;
+    if(p.shape==='round' && k==='D'){ p.H = p.B = x; } refresh(false); };
+  num.addEventListener('input', e=>set(e.target.value));
+  rng.addEventListener('input', e=>set(e.target.value));
+});
+document.querySelectorAll('[data-shape]').forEach(b=>b.addEventListener('click',()=>{
+  p.shape = b.dataset.shape;
+  if(p.shape==='round'){ p.D = p.D || p.H; } else { p.H = p.H || p.D; p.B = p.B || p.D; }
+  syncInputs(); refresh(true);
+}));
+$('rows').addEventListener('click', e=>{
+  const del = e.target.closest('[data-del]');
+  if(del){ e.stopPropagation(); const i=+del.dataset.del; if(rows.length<=1) return;
+    rows.splice(i,1); cur = Math.min(cur, rows.length-1); p = {...rows[cur]}; renderTable(); syncInputs(); refresh(true); return; }
+  const tr = e.target.closest('tr'); if(!tr) return;
+  cur = +tr.dataset.i; p = {...rows[cur]}; renderTable(); syncInputs(); refresh(true);
+});
+$('updRow').addEventListener('click',()=>{ if(check(p)) return; rows[cur] = {...p}; renderTable(); });
+$('addRow').addEventListener('click',()=>{
+  if(check(p)) return;
+  const n = rows.reduce((m,r)=>Math.max(m, parseInt(r.part.replace(/\D/g,''))||0),0)+1;
+  p = {...p, part:`M-${String(n).padStart(2,'0')}`}; rows.push({...p}); cur = rows.length-1;
+  renderTable(); syncInputs(); refresh(false);
+});
+$('copyCsv').addEventListener('click', async e=>{
+  const csv = ['Part,Shape,D,H,B,t,L,Start angle,End angle', ...rows.map(r=>[r.part,r.shape,r.D,r.H,r.B,r.t,r.L,r.a1,r.a2].join(','))].join('\n');
+  const b = e.currentTarget;
+  try{ await navigator.clipboard.writeText(csv); b.textContent='Copied'; }catch(_){ b.textContent='Copy blocked'; }
+  setTimeout(()=>b.textContent='Copy CSV',1500);
+});
+
+renderTable(); syncInputs(); if(gl) resize(); refresh(true);
+</script>
+</body>
+</html>
